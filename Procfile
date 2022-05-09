@@ -1,0 +1,1 @@
+web: gunicorn symc.wsgi --log-file -
