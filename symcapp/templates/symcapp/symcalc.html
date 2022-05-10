@@ -55,7 +55,7 @@
                         <ul>
                             <li>log => take 2 args; x, & y <br />
                                 log(6) => default base is e <br />
-                                log(10, 100) => base is 10</li>
+                                log(100, 10) => base is 10</li>
                         </ul>
                         <li>Roots</li>
                         <ul>
@@ -110,6 +110,7 @@
                     </label>
                 </div>
                 <div class="p-2 mx-2 border border-dark rounded-3" id="soln" style="display:none;">
+                    <div id="sol0"></div>
                     <div id="sol1"></div>
                     <div id="sol2"></div>
                     <div id="sol3"></div>
@@ -119,8 +120,9 @@
                     <div id="sol7"></div>
                 </div>
                 <div class="p-2 mt-2 d-flex">
-                    <button class="btn btn-success me-3" id="solve">Solve</button>
-                    <button class="btn btn-danger" id="clear">Reset</button>
+                    <button class="btn btn-success" id="solve">Solve</button>
+                    <button class="btn btn-danger mx-3" id="clear">Reset</button>
+                    <button class="btn btn-secondary d-none" id="raw">Raw</button>
                 </div>
             </div>
             <div class="border bg-secondary bg-opacity-25 fw-bold border-white fst-italic p-2 mt-3 text-center text-info rounded-3">
@@ -139,6 +141,7 @@
                 $("#expr, #varz, #varc").val("");
                 $("#soln > div").html("");
                 $("#soln").hide();
+                $("#raw").addClass("d-none");
             }
             $("#clear").click(() => clear());
             $("#guide").click(() => {
@@ -170,6 +173,34 @@
                 $("#store").data("ctype", "limit");
                 clear();
             });
+            $("#raw").click(() => {
+                if ($("#raw").data("state") == "raw") {
+                    for (const res of $("#store").data("nolatex")) {
+                        MathJax.tex2svgPromise(res[0][1])
+                        .then(node => {
+                            $(res[0][0]).show().html(res[1]).prepend(node).addClass("text-center");
+                        })
+                        .catch(e => {
+                            $(res[0][0]).show().html(e);
+                        });
+                    }
+                    $("#raw").html("Processed").data("state", "processed");
+                } else {
+                    for (const res of $("#store").data("latex")) {
+                        MathJax.tex2svgPromise(res[1])
+                        .then(node => {
+                            MathJax.tex2svgPromise(res[0][1])
+                            .then(node2 => {
+                                $(res[0][0]).show().html(node).prepend(node2);
+                            });
+                        })
+                        .catch(e => {
+                            $(res[0][0]).show().html(e);
+                        });
+                    }
+                    $("#raw").html("Raw").data("state", "raw");
+                }
+            });
             $("#solve").click(() => {
                 $.ajax({
                     type: "POST",
@@ -196,9 +227,14 @@
                                 $(res[0][0]).show().html(e);
                             });
                         }
+                        $("#store").data({
+                            nolatex: response.result2,
+                            latex: response.result
+                    });
+                        $("#raw").removeClass("d-none").data("state", "raw");
                     },
                     error: function(response) {
-                        $("#soln").show().html("Operation Failed!");
+                        $("#soln").show().html(JSON.stringify(response));
                     }
                 });
             });
