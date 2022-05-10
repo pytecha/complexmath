@@ -230,7 +230,7 @@
                             nolatex: response.result2,
                             latex: response.result
                     });
-                        $("#raw").removeClass("d-none").data("state", "raw");
+                        $("#raw").removeClass("d-none").data("state", "raw").html("Raw");
                     },
                     error: function(response) {
                         $("#soln").show().html(JSON.stringify(response));
