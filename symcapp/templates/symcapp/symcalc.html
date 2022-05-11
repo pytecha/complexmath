@@ -109,10 +109,10 @@
                         <input class="p-2 border rounded-3 border-dark w-25" type="text" id="varc" value="" />
                     </label>
                 </div>
-                <div class="text-danger text-center p-3 fw-bold" id="error">
+                <div class="text-danger text-center p-3 fw-bold" id="error" style="display:none;">
                     Operation Failed!
                 </div>
-                <div class="text-info text-center p-3 fw-bold" id="calculating">
+                <div class="text-info text-center p-3 fw-bold" id="calculating" style="display:none;">
                     Calculating...
                 </div>
                 <div class="p-2 mx-2 border border-dark rounded-3" id="soln" style="display:none;">
@@ -208,7 +208,7 @@
             });
             $("#solve").click(() => {
                 $("#calculating").show();
-                $("#error").hide();
+                $("#error, #soln").hide();
                 $.ajax({
                     type: "POST",
                     url: "{% url 'math' %}",
