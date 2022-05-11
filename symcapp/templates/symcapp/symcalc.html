@@ -109,6 +109,12 @@
                         <input class="p-2 border rounded-3 border-dark w-25" type="text" id="varc" value="" />
                     </label>
                 </div>
+                <div class="text-danger text-center p-3 fw-bold" id="error">
+                    Operation Failed!
+                </div>
+                <div class="text-info text-center p-3 fw-bold" id="calculating">
+                    Calculating...
+                </div>
                 <div class="p-2 mx-2 border border-dark rounded-3" id="soln" style="display:none;">
                     <div id="sol1"></div>
                     <div id="sol2"></div>
@@ -139,7 +145,7 @@
             function clear() {
                 $("#expr, #varz, #varc").val("");
                 $("#soln > div").html("");
-                $("#soln").hide();
+                $("#soln, #error").hide();
                 $("#raw").addClass("d-none");
             }
             $("#clear").click(() => clear());
@@ -201,6 +207,8 @@
                 }
             });
             $("#solve").click(() => {
+                $("#calculating").show();
+                $("#error").hide();
                 $.ajax({
                     type: "POST",
                     url: "{% url 'math' %}",
@@ -229,11 +237,13 @@
                         $("#store").data({
                             nolatex: response.result2,
                             latex: response.result
-                    });
+                        });
+                        $("#calculating").hide();
                         $("#raw").removeClass("d-none").data("state", "raw").html("Raw");
                     },
                     error: function(response) {
-                        $("#soln").show().html(JSON.stringify(response));
+                        $("#calculating").hide();
+                        $("#error").show();
                     }
                 });
             });
