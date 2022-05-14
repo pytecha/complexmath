@@ -31,6 +31,6 @@ def math(request):
          isanalitic = simplify(_rex-_imy) == 0 and simplify(_rey+_imx) == 0
          info = [["#sol1",r"Real\;Part:"], ["#sol2",r"Img\;Part:"], ["#sol3",r"\frac{\partial u}{\partial x}:"], ["#sol4",r"\frac{\partial u}{\partial y}:"], ["#sol5",r"\frac{\partial v}{\partial x}:"], ["#sol6",r"\frac{\partial v}{\partial y}:"]]
          result = [[j,latex(simplify(_i))] for _i, j in zip([_re, _im, _rex, _rey, _imx, _imy], info)]+[[["#sol7", r"Is\;Analytic:"], latex(isanalitic)]]
-         result2 = [[j,str(simplify(_i)).lower()] for _i, j in zip([_re, _im, _rex, _rey, _imx, _imy], info)]+[[["#sol7", r"Is\;Analytic:"], isanalitic]]
+         result2 = [[j,str(simplify(_i)).lower()] for _i, j in zip([_re, _im, _rex, _rey, _imx, _imy], info)]+[[["#sol7", r"Is\;Analytic:"], str(isanalitic)]]
     
     return JsonResponse({"result": result, "result2": result2})
